@@ -1,0 +1,64 @@
+<html>
+        <head lang="en">
+            <meta charset="UTF-8">
+            <link rel="stylesheet" type="text/css" href="/css/style.css">
+            <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+            <script type ="text/javascript" src="/socket.io/socket.io.js"></script>
+            <script type ="text/javascript">
+                 $(document). ready(function (){
+                    // this triggers the connection event in our server!
+                    var socket  = io.connect();
+                    // we'll write all the socket stuff after the above line!
+                    $( 'button').click(function (){
+                        var data = {
+                            name: document.getElementById('name').value,
+                            location: document.getElementById('location').value,
+                            language: document.getElementById('language').value,
+                            comment: document.getElementById('comment').value
+                        }
+                        socket.emit( "button_clicked", {client:  data});
+                    });
+                    socket.on( 'server_response', function (data){
+                        console.log(data);
+                        document.getElementById("display").innerHTML = 
+                        `<h4>You emiited the following information to the sever: {name: '${data.server.name}', location: '${data.server.location}', language: '${data.server.language}', comment: '${data.server.comment}'} </h4>
+                        
+                        <h4>Your lucky number emitted by the server is ${ data.rand }.</h4>`; 
+                    });
+                })
+
+                
+                
+            </script>
+            <title>Socket Survey Form</title>
+        </head>
+
+        <body>
+            <div id="display"> 
+                <h1></h1>
+
+            </div>
+            <div class="form">
+                <!-- <form action="/" method="post"> -->
+                    <label for="name">Your Name:</label>
+                    <input type="text" name="name" id="name">
+                    <label for="location">Dojo Location:</label>
+                    <select name="location" id="location">
+                        <option value="San Jose">San Jose</option>
+                        <option value="Burbank">Burbank</option>
+                        <option value="Mountain View">Mountain View</option>
+                    </select>
+                    <label for="language">Favorite Language:</label>
+                    <select name="language" id="language">
+                        <option value="Javascript">Javascript</option>
+                        <option value="Swift">Swift</option>
+                        <option value="MEAN">MEAN</option>
+                    </select>
+                    <label for="comment">Comment (optional):</label>
+                    <textarea name="comment" id="comment" cols="30" rows="10"></textarea>
+                    <button type="submit" id="button">Submit</button>
+                <!-- </form> -->
+            </div>
+        </body>
+    
+    </html>
